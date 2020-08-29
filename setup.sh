@@ -1,64 +1,27 @@
 #!/bin/bash
+function get_json_value()
+{
+  local json=$1
+  local key=$2
 
-VERSION="0.102.4"
-STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}/stathub.$(uname -m).tar.gz"
+  if [[ -z "$3" ]]; then
+    local num=1
+  else
+    local num=$3
+  fi
 
-BASEDIR="/usr/local/stathub"
+  local value=$(echo "${json}" | awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'${key}'\042/){print $(i+1)}}}' | tr -d '"' | sed -n ${num}p)
 
-[ $(id -u) -ne 0 ] && sudo="sudo" || sudo=""
-id -u nobody >/dev/null 2>&1
-if [ $? -ne 0 ]; then
-    $sudo groupadd nogroup
-    useradd -g nogroup nobody -s /bin/false
-fi
-
-$sudo mkdir -p $BASEDIR
-$sudo chown -R $(id -u -n):$(id -g -n) $BASEDIR
-if [ ! -d $BASEDIR ]; then
-    echo "Unable to create dir $BASEDIR and chown to current user, Please manual do it"
-    exit 1
-fi
-cd $BASEDIR
-
-command_exists() {
-    type "$1" &> /dev/null
+  echo ${value}
 }
-
-if command_exists wget; then
-    wget --no-check-certificate $STATHUB_URL
-elif command_exists curl; then
-    curl --insecure -O $STATHUB_URL
-else
-    echo "Unable to find curl or wget, Please install and try again."
-    exit 1
-fi
-
-if [ ! -f stathub.$(uname -m).tar.gz ]; then
-    echo "Unable to get server file, Please manual download it"
-    exit 1
-fi
-
-tar zxf stathub.$(uname -m).tar.gz
-chmod +x stathub service
-[ ! -d conf ] && $sudo mkdir $BASEDIR/conf
-if [ ! -f conf/stathub.conf ]; then
-    $sudo ./stathub -c conf/stathub.conf --init-server
-fi
-$sudo mkdir $BASEDIR/pkgs
-mv stathub.*.tar.gz $BASEDIR/pkgs
-
-if [ -z "$(grep stathub /etc/rc.local)" ]; then
-    $sudo sh -c "echo \"cd $BASEDIR; rm -f log/stathub.pid; ./service start >>$BASEDIR/log/stathub.log 2>&1\" >> /etc/rc.local"
-fi
-
-echo "----------------------------------------------------"
-echo "| Server install successful, Please start it using |"
-echo "| ./service {start|stop|restart}                   |"
-echo "| Now it will automatic start                      |"
-echo "|                                                  |"
-echo "| Feedback: https://github.com/likexian/stathub-go |"
-echo "| Thank you for your using, By Li Kexian           |"
-echo "| StatHub, Apache License, Version 2.0             |"
-echo "----------------------------------------------------"
-
-$sudo ./service start
+apt update
+apt install curl
+VERSION=get_json_value $(curl -s https://api.github.com/repos/fengjijiao/stathub-go/releases/latest) tag_name
+BASEDIR="/usr/local/stathub"
+mkdir BASEDIR
+wget -O "${BASEDIR}/stathub" "https://github.com/fengjijiao/stathub-go/releases/download/v${VERSION}/stathub-$(uname -m)"
+wget -O "/etc/systemd/system/stathub.service" "https://raw.githubusercontent.com/fengjijiao/stathub-go/master/stathub.service"
+mkdir "${BASEDIR}/conf"
+wget -O "/usr/local/stathub/conf/stathub.conf" "https://raw.githubusercontent.com/fengjijiao/stathub-go/master/stathub-server.conf"
+systemctl enable stathub
+systemctl start stathub
