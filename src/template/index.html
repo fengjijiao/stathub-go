@@ -127,10 +127,16 @@ function version_result(is_update) {
 }
 var v = getCookie('is_update');
 if (v === false) {
-    var u = document.createElement('script');
-    u.src = '//www.likexian.com/dream/stathub/v{{.version}}.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(u, s);
+    var current_version = "{{.version}}";
+    $.get("https://api.github.com/repos/fengjijiao/stathub-go/releases/latest", function(res) {
+        if (res.tag_name == current_version) {
+            $("#update").hide();
+        }
+    }, "json");
+    // var u = document.createElement('script');
+    // u.src = '//www.likexian.com/dream/stathub/v{{.version}}.js';
+    // var s = document.getElementsByTagName('script')[0];
+    // s.parentNode.insertBefore(u, s);
 } else {
     version_result(v - 0);
 }
