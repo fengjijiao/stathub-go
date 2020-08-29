@@ -1,11 +1,12 @@
 #!/bin/bash
-function get_json_value() {
+function get_json_value()
+{
   local json=$1
   local key=$2
   if [[ -z "$3" ]]; then
-    local num=1
+	local num=1
   else
-    local num=$3
+	local num=$3
   fi
   local value=$(echo "${json}" | awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'${key}'\042/){print $(i+1)}}}' | tr -d '"' | sed -n ${num}p)
   echo ${value}
@@ -16,8 +17,24 @@ VERSION=get_json_value $(curl -s https://api.github.com/repos/fengjijiao/stathub
 BASEDIR="/usr/local/stathub"
 mkdir BASEDIR
 wget -O "${BASEDIR}/stathub" "https://github.com/fengjijiao/stathub-go/releases/download/v${VERSION}/stathub-$(uname -m)"
+chmod +x "${BASEDIR}/stathub"
 wget -O "/etc/systemd/system/stathub.service" "https://raw.githubusercontent.com/fengjijiao/stathub-go/master/stathub.service"
 mkdir "${BASEDIR}/conf"
-wget -O "/usr/local/stathub/conf/stathub.conf" "https://raw.githubusercontent.com/fengjijiao/stathub-go/master/stathub-client.conf"
+echo "{
+\"id\": \"342e326dfbfd34cbab2c6430eb6e2f63\",
+\"name\": \"\",
+\"role\": \"client\",
+\"password\": \"b6aabbd98ad76d1f115d8de399461b1a\",
+\"server_key\": \"{{.key}}\",
+\"server_url\": \"https://{{.server}}\",
+\"daemon_user\": \"nobody\",
+\"pid_file\": \"log/stathub.pid\",
+\"log_file\": \"log/stathub.log\",
+\"base_dir\": \"/usr/local/stathub/\",
+\"data_dir\": \"data\",
+\"http_listen\": \"127.0.0.1:15944\",
+\"file\": \"/usr/local/stathub/conf/stathub.conf\"
+}" | sed '/^#/d;/^\s*$/d' > /usr/local/stathub/conf/stathub.conf
+#wget -O "/usr/local/stathub/conf/stathub.conf" "https://raw.githubusercontent.com/fengjijiao/stathub-go/master/stathub-client.conf"
 systemctl enable stathub
 systemctl start stathub

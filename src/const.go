@@ -21,7 +21,7 @@ package main
 
 // const the default value
 const (
-	DEBUG                = true
+	DEBUG                = false
 	DEFAULT_SERVER_URL   = "http://127.0.0.1:15944"
 	DEFAULT_BASE_DIR     = "/usr/local/stathub"
 	DEFAULT_DATA_DIR     = "data"

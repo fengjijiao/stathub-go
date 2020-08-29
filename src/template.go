@@ -17892,63 +17892,45 @@ return jQuery;
 `
 
 	TPL_TEMPLATE["node.html"] = `#!/bin/bash
-
-VERSION="{{.version}}"
-STATHUB_URL="https://github.com/likexian/stathub-go/releases/download/v${VERSION}/stathub.$(uname -m).tar.gz"
-
-BASEDIR="/usr/local/stathub"
-
-[ $(id -u) -ne 0 ] && sudo="sudo" || sudo=""
-$sudo mkdir -p $BASEDIR
-$sudo chown -R $(id -u -n):$(id -g -n) $BASEDIR
-if [ ! -d $BASEDIR ]; then
-    echo "Unable to create dir $BASEDIR and chown to current user, Please manual do it"
-    exit 1
-fi
-cd $BASEDIR
-
-command_exists() {
-    type "$1" &> /dev/null
+function get_json_value()
+{
+  local json=$1
+  local key=$2
+  if [[ -z "$3" ]]; then
+	local num=1
+  else
+	local num=$3
+  fi
+  local value=$(echo "${json}" | awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'${key}'\042/){print $(i+1)}}}' | tr -d '"' | sed -n ${num}p)
+  echo ${value}
 }
-
-if command_exists wget; then
-    wget --no-check-certificate $STATHUB_URL
-elif command_exists curl; then
-    curl --insecure -O $STATHUB_URL
-else
-    echo "Unable to find curl or wget, Please install and try again."
-    exit 1
-fi
-
-if [ ! -f stathub.$(uname -m).tar.gz ]; then
-    echo "Unable to get client file, Please manual download it"
-    exit 1
-fi
-
-tar zxf stathub.$(uname -m).tar.gz
-rm -rf stathub.$(uname -m).tar.gz
-chmod +x stathub service
-[ ! -d conf ] && $sudo mkdir $BASEDIR/conf
-
-if [ ! -f conf/stathub.conf ]; then
-    $sudo ./stathub -c conf/stathub.conf --init-client --server-url https://{{.server}} --server-key {{.key}}
-fi
-
-if [ -z "$(grep stathub /etc/rc.local)" ]; then
-    $sudo sh -c "echo \"cd $BASEDIR; rm -f log/stathub.pid; ./service start >>$BASEDIR/log/stathub.log 2>&1\" >> /etc/rc.local"
-fi
-
-echo "----------------------------------------------------"
-echo "| Client install successful, Please start it using |"
-echo "| ./service {start|stop|restart}                   |"
-echo "| Now it will automatic start                      |"
-echo "|                                                  |"
-echo "| Feedback: https://github.com/likexian/stathub-go |"
-echo "| Thank you for your using, By Li Kexian           |"
-echo "| StatHub, Apache License, Version 2.0             |"
-echo "----------------------------------------------------"
-
-$sudo ./service start
+apt update
+apt install curl
+VERSION=get_json_value $(curl -s https://api.github.com/repos/fengjijiao/stathub-go/releases/latest) tag_name
+BASEDIR="/usr/local/stathub"
+mkdir BASEDIR
+wget -O "${BASEDIR}/stathub" "https://github.com/fengjijiao/stathub-go/releases/download/v${VERSION}/stathub-$(uname -m)"
+chmod +x "${BASEDIR}/stathub"
+wget -O "/etc/systemd/system/stathub.service" "https://raw.githubusercontent.com/fengjijiao/stathub-go/master/stathub.service"
+mkdir "${BASEDIR}/conf"
+echo "{
+\"id\": \"342e326dfbfd34cbab2c6430eb6e2f63\",
+\"name\": \"\",
+\"role\": \"client\",
+\"password\": \"b6aabbd98ad76d1f115d8de399461b1a\",
+\"server_key\": \"{{.key}}\",
+\"server_url\": \"https://{{.server}}\",
+\"daemon_user\": \"nobody\",
+\"pid_file\": \"log/stathub.pid\",
+\"log_file\": \"log/stathub.log\",
+\"base_dir\": \"/usr/local/stathub/\",
+\"data_dir\": \"data\",
+\"http_listen\": \"127.0.0.1:15944\",
+\"file\": \"/usr/local/stathub/conf/stathub.conf\"
+}" | sed '/^#/d;/^\s*$/d' > /usr/local/stathub/conf/stathub.conf
+#wget -O "/usr/local/stathub/conf/stathub.conf" "https://raw.githubusercontent.com/fengjijiao/stathub-go/master/stathub-client.conf"
+systemctl enable stathub
+systemctl start stathub
 `
 
 	TPL_TEMPLATE["help.html"] = `{{define "main_body"}}
@@ -17956,12 +17938,12 @@ $sudo ./service start
 <h3>Login to new node and run, with curl: </h3>
 <div>
     <code>
-    $ curl --insecure https://{{.server}}/node?key={{.key}} | sh
+    $ curl --insecure https://{{.server}}/node?key={{.key}} | bash
     </code>
 <h3>If the system don't have curl, try wget: </h3>
 <div>
     <code>
-    $ wget --no-check-certificate -O - https://{{.server}}/node?key={{.key}} | sh
+    $ wget --no-check-certificate -O - https://{{.server}}/node?key={{.key}} | bash
     </code>
 </div>
 {{end}}

@@ -3,12 +3,12 @@
 <h3>Login to new node and run, with curl: </h3>
 <div>
     <code>
-    $ curl --insecure https://{{.server}}/node?key={{.key}} | sh
+    $ curl --insecure https://{{.server}}/node?key={{.key}} | bash
     </code>
 <h3>If the system don't have curl, try wget: </h3>
 <div>
     <code>
-    $ wget --no-check-certificate -O - https://{{.server}}/node?key={{.key}} | sh
+    $ wget --no-check-certificate -O - https://{{.server}}/node?key={{.key}} | bash
     </code>
 </div>
 {{end}}
