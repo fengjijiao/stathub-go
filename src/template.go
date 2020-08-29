@@ -17909,7 +17909,7 @@ apt install curl
 VERSION=get_json_value $(curl -s https://api.github.com/repos/fengjijiao/stathub-go/releases/latest) tag_name
 BASEDIR="/usr/local/stathub"
 mkdir BASEDIR
-wget -O "${BASEDIR}/stathub" "https://github.com/fengjijiao/stathub-go/releases/download/v${VERSION}/stathub-$(uname -m)"
+wget -O "${BASEDIR}/stathub" "https://github.com/fengjijiao/stathub-go/releases/download/${VERSION}/stathub-$(uname -m)"
 chmod +x "${BASEDIR}/stathub"
 wget -O "/etc/systemd/system/stathub.service" "https://raw.githubusercontent.com/fengjijiao/stathub-go/master/stathub.service"
 mkdir "${BASEDIR}/conf"
@@ -17952,7 +17952,7 @@ systemctl start stathub
 	TPL_TEMPLATE["index.html"] = `{{define "main_body"}}
 <script type="text/javascript">document.getElementById('auth-span').style.display='block';</script>
 <div id="update" class="bg-warning">
-    New version available, Please download from <a target="_blank" href="https://github.com/likexian/stathub-go">https://github.com/likexian/stathub-go</a>.
+    New version available, Please download from <a target="_blank" href="https://github.com/fengjijiao/stathub-go">https://github.com/fengjijiao/stathub-go</a>.
 </div>
 <table class="table table-striped">
     <thead>
@@ -18078,10 +18078,16 @@ function version_result(is_update) {
 }
 var v = getCookie('is_update');
 if (v === false) {
-    var u = document.createElement('script');
-    u.src = '//www.likexian.com/dream/stathub/v{{.version}}.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(u, s);
+	var current_version = "{{.version}}";
+	$.get("https://api.github.com/repos/fengjijiao/stathub-go/releases/latest", function(res) {
+		if (res.tag_name == current_version) {
+			$("#update").hide();
+		}
+	}, "json");
+    // var u = document.createElement('script');
+    // u.src = '//www.likexian.com/dream/stathub/v{{.version}}.js';
+    // var s = document.getElementsByTagName('script')[0];
+    // s.parentNode.insertBefore(u, s);
 } else {
     version_result(v - 0);
 }
@@ -18165,7 +18171,7 @@ $('.delete-node').click(function(e){
         {{template "main_body" .}}
     </div>
     <div class="footer text-center">
-        &copy; 2015-2019 <a href="https://www.likexian.com/">Li Kexian</a>, Apache License, Version 2.0, <a href="https://www.likexian.com/en-US/donate/">donate</a>.
+        &copy; 2015-2020 <a href="https://www.likexian.com/">Li Kexian</a> & <a href="https://www.fjj.us/">fengjijiao</a>, Apache License, Version 2.0.
     </div>
 </body>
 </html>
