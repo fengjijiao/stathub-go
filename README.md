@@ -1,11 +1,10 @@
 # Stat Hub
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![GoDoc](https://godoc.org/github.com/likexian/stathub-go?status.svg)](https://godoc.org/github.com/likexian/stathub-go)
-[![Build Status](https://travis-ci.org/likexian/stathub-go.svg?branch=master)](https://travis-ci.org/likexian/stathub-go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/likexian/stathub-go)](https://goreportcard.com/report/github.com/likexian/stathub-go)
-[![Download Total](https://img.shields.io/github/downloads/likexian/stathub-go/total.svg)](https://github.com/likexian/stathub-go/releases)
-[![Paypal Donate](https://img.shields.io/badge/donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VXJZTJEZTLUM8)
+[![GoDoc](https://godoc.org/github.com/fengjijiao/stathub-go?status.svg)](https://godoc.org/github.com/fengjijiao/stathub-go)
+[![Build Status](https://travis-ci.org/fengjijiao/stathub-go.svg?branch=master)](https://travis-ci.org/fengjijiao/stathub-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/fengjijiao/stathub-go)](https://goreportcard.com/report/github.com/fengjijiao/stathub-go)
+[![Download Total](https://img.shields.io/github/downloads/fengjijiao/stathub-go/total.svg)](https://github.com/fengjijiao/stathub-go/releases)
 
 A smart Hub for holding server stat
 
@@ -34,11 +33,11 @@ You shall choose a server for master, and install it following the below
 
 ### Linux via curl
 
-    curl --insecure https://raw.githubusercontent.com/likexian/stathub-go/master/setup.sh | sh
+    curl --insecure https://raw.githubusercontent.com/fengjijiao/stathub-go/master/setup.sh | sh
 
 ### Linux via wget
 
-    wget --no-check-certificate -O - https://raw.githubusercontent.com/likexian/stathub-go/master/setup.sh | sh
+    wget --no-check-certificate -O - https://raw.githubusercontent.com/fengjijiao/stathub-go/master/setup.sh | sh
 
 ### Open on your PC browser
 
@@ -48,7 +47,7 @@ The default url is
 
     https://ip:15944
 
-Then enter the default password: likexian
+Then enter the default password: fengjijiao
 
 ### Add a CLIENT (node)
 
@@ -85,9 +84,9 @@ Sure, please add the folling config to nginx conf file.
 
 ## Dependencies
 
-- [github.com/likexian/gokit](https://github.com/likexian/gokit)
-- [github.com/likexian/host-stat-go](https://github.com/likexian/host-stat-go)
-- [github.com/likexian/simplejson-go](https://github.com/likexian/simplejson-go)
+- [github.com/fengjijiao/gokit](https://github.com/fengjijiao/gokit)
+- [github.com/fengjijiao/host-stat-go](https://github.com/fengjijiao/host-stat-go)
+- [github.com/fengjijiao/simplejson-go](https://github.com/fengjijiao/simplejson-go)
 
 ## LICENSE
 
@@ -97,8 +96,8 @@ Licensed under the Apache License 2.0
 
 ## About
 
-- [Li Kexian](https://www.likexian.com/)
+- [Li Kexian](https://www.fengjijiao.com/)
 
 ## DONATE
 
-- [Help me make perfect](https://www.likexian.com/donate/)
+- [Help me make perfect](https://www.fengjijiao.com/donate/)

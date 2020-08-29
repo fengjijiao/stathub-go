@@ -21,7 +21,7 @@ package main
 
 // Version returns package version
 func Version() string {
-	return "0.102.7-fjj"
+	return "0.102.8"
 }
 
 // Author returns package author
