@@ -15,7 +15,7 @@ apt update
 apt install curl
 VERSION=get_json_value $(curl -s https://api.github.com/repos/fengjijiao/stathub-go/releases/latest) tag_name
 BASEDIR="/usr/local/stathub"
-mkdir BASEDIR
+mkdir $BASEDIR
 wget -O "${BASEDIR}/stathub" "https://github.com/fengjijiao/stathub-go/releases/download/${VERSION}/stathub-$(uname -m)"
 chmod +x "${BASEDIR}/stathub"
 wget -O "/etc/systemd/system/stathub.service" "https://raw.githubusercontent.com/fengjijiao/stathub-go/master/stathub.service"
