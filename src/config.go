@@ -39,8 +39,7 @@ type Config struct {
 	LogFile    string `json:"log_file"`
 	BaseDir    string `json:"base_dir"`
 	DataDir    string `json:"data_dir"`
-	TLSCert    string `json:"tls_cert"`
-	TLSKey     string `json:"tls_key"`
+	HttpListen string `json:"http_listen"`
 	File       string `json:"file"`
 }
 
@@ -70,8 +69,7 @@ func GetConfig(fname string) (config Config, err error) {
 	config.LogFile = data.Get("log_file").MustString("")
 	config.BaseDir = data.Get("base_dir").MustString("")
 	config.DataDir = data.Get("data_dir").MustString("")
-	config.TLSCert = data.Get("tls_cert").MustString("")
-	config.TLSKey = data.Get("tls_key").MustString("")
+	config.HttpListen = data.Get("http_listen").MustString("")
 	config.File = fname
 
 	if config.Id == "" {
@@ -105,11 +103,8 @@ func GetConfig(fname string) (config Config, err error) {
 		if config.DataDir == "" {
 			return config, errors.New("missing data_dir config")
 		}
-		if config.TLSCert == "" {
-			return config, errors.New("missing tls_cert config")
-		}
-		if config.TLSKey == "" {
-			return config, errors.New("missing tls_key config")
+		if config.HttpListen == "" {
+			return config, errors.New("missing http_listen config")
 		}
 	} else {
 		if config.ServerUrl == "" {
@@ -144,8 +139,7 @@ func newServerConfig(fname, id, name, passWord, serverKey string) (err error) {
 		DEFAULT_PROCESS_LOG,
 		DEFAULT_BASE_DIR,
 		DEFAULT_DATA_DIR,
-		DEFAULT_TLS_CERT,
-		DEFAULT_TLS_KEY,
+		DEFAULT_HTTP_LISTEN,
 		fname,
 	}
 
@@ -166,8 +160,7 @@ func newClientConfig(fname, id, name, serverKey, serverUrl string) (err error) {
 		DEFAULT_PROCESS_LOG,
 		DEFAULT_BASE_DIR,
 		DEFAULT_DATA_DIR,
-		DEFAULT_TLS_CERT,
-		DEFAULT_TLS_KEY,
+		DEFAULT_HTTP_LISTEN,
 		fname,
 	}
 

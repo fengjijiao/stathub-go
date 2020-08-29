@@ -28,6 +28,5 @@ const (
 	DEFAULT_PROCESS_USER = "nobody"
 	DEFAULT_PROCESS_LOCK = "log/stathub.pid"
 	DEFAULT_PROCESS_LOG  = "log/stathub.log"
-	DEFAULT_TLS_CERT     = "cert/cert.pem"
-	DEFAULT_TLS_KEY      = "cert/cert.key"
+	DEFAULT_HTTP_LISTEN      = ":15944"
 )

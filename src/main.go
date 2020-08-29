@@ -118,18 +118,6 @@ func main() {
 				SERVER_LOGGER.Fatal(err.Error())
 			}
 		}
-		if !xfile.Exists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSCert) {
-			err := xfile.WriteText(SERVER_CONFIG.BaseDir+SERVER_CONFIG.TLSCert, TPL_CERT["cert.pem"])
-			if err != nil {
-				SERVER_LOGGER.Fatal(err.Error())
-			}
-		}
-		if !xfile.Exists(SERVER_CONFIG.BaseDir + SERVER_CONFIG.TLSKey) {
-			err := xfile.WriteText(SERVER_CONFIG.BaseDir+SERVER_CONFIG.TLSKey, TPL_CERT["cert.key"])
-			if err != nil {
-				SERVER_LOGGER.Fatal(err.Error())
-			}
-		}
 	}
 
 	for _, v := range []string{*configFile, SERVER_CONFIG.PidFile, SERVER_CONFIG.LogFile} {

@@ -64,6 +64,7 @@ func (n Statuses) Less(i, j int) bool { return n[i].Name < n[j].Name }
 
 // ReadStatus returns read status from dir
 func ReadStatus(dataDir string) Statuses {
+	dataDir = SERVER_CONFIG.BaseDir + dataDir
 	data := []Status{}
 	files, err := ioutil.ReadDir(dataDir)
 	if err == nil {
@@ -141,6 +142,7 @@ func ReadStatus(dataDir string) Statuses {
 
 // WriteStatus write status to dir
 func WriteStatus(dataDir string, data *simplejson.Json) (err error) {
+	dataDir = SERVER_CONFIG.BaseDir + dataDir
 	dataId, _ := data.Get("id").String()
 	dataIdDir := dataDir + "/" + dataId[:8]
 	if !xfile.Exists(dataIdDir) {

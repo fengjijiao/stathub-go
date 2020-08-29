@@ -56,8 +56,7 @@ func HttpService() {
 	http.HandleFunc("/api/node", apiNodeHandler)
 
 	SERVER_LOGGER.Info("start http service")
-	err := http.ListenAndServeTLS(":15944",
-		SERVER_CONFIG.BaseDir+SERVER_CONFIG.TLSCert, SERVER_CONFIG.BaseDir+SERVER_CONFIG.TLSKey, nil)
+	err := http.ListenAndServe(SERVER_CONFIG.HttpListen, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -81,19 +80,25 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	tpl, err := template.New("index").Parse(TPL_TEMPLATE["layout.html"])
 	if err != nil {
+		fmt.Println("1")
+		fmt.Println(err)
 		httpError(w, r, http.StatusInternalServerError)
 		return
 	}
 
 	tpl, err = tpl.Parse(TPL_TEMPLATE["index.html"])
 	if err != nil {
+		fmt.Println("2")
+		fmt.Println(err)
 		httpError(w, r, http.StatusInternalServerError)
 		return
 	}
 
 	if DEBUG {
-		tpl, err = template.ParseFiles("template/layout.html", "template/index.html")
+		tpl, err = template.ParseFiles(SERVER_CONFIG.BaseDir+"template/layout.html", SERVER_CONFIG.BaseDir+"template/index.html")
 		if err != nil {
+			fmt.Println("3")
+			fmt.Println(err)
 			httpError(w, r, http.StatusInternalServerError)
 			return
 		}
@@ -143,7 +148,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if DEBUG {
-			tpl, err = template.ParseFiles("template/layout.html", "template/login.html")
+			tpl, err = template.ParseFiles(SERVER_CONFIG.BaseDir+"template/layout.html", SERVER_CONFIG.BaseDir+"template/login.html")
 			if err != nil {
 				httpError(w, r, http.StatusInternalServerError)
 				return
@@ -201,7 +206,7 @@ func passwdHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if DEBUG {
-			tpl, err = template.ParseFiles("template/layout.html", "template/login.html")
+			tpl, err = template.ParseFiles(SERVER_CONFIG.BaseDir+"template/layout.html", SERVER_CONFIG.BaseDir+"template/login.html")
 			if err != nil {
 				httpError(w, r, http.StatusInternalServerError)
 				return
@@ -231,7 +236,7 @@ func helpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if DEBUG {
-		tpl, err = template.ParseFiles("template/layout.html", "template/help.html")
+		tpl, err = template.ParseFiles(SERVER_CONFIG.BaseDir+"template/layout.html", SERVER_CONFIG.BaseDir+"template/help.html")
 		if err != nil {
 			httpError(w, r, http.StatusInternalServerError)
 			return
@@ -255,7 +260,7 @@ func nodeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if DEBUG {
-		tpl, err = template.ParseFiles("template/node.html")
+		tpl, err = template.ParseFiles(SERVER_CONFIG.BaseDir+"template/node.html")
 		if err != nil {
 			httpError(w, r, http.StatusInternalServerError)
 			return
@@ -390,7 +395,7 @@ func staticHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if DEBUG {
-		http.ServeFile(w, r, r.URL.Path[1:])
+		http.ServeFile(w, r, SERVER_CONFIG.BaseDir+r.URL.Path[1:])
 	} else {
 		if test, ok := TPL_STATIC[r.URL.Path[8:]]; ok {
 			fmt.Fprint(w, test)

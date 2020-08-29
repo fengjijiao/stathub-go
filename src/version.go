@@ -21,12 +21,12 @@ package main
 
 // Version returns package version
 func Version() string {
-	return "0.102.5"
+	return "0.102.7-fjj"
 }
 
 // Author returns package author
 func Author() string {
-	return "[Li Kexian](https://www.likexian.com/)"
+	return "[Li Kexian](https://www.likexian.com/) & [fengjijiao](https://www.fjj.us/)"
 }
 
 // License returns package license
